@@ -2,34 +2,57 @@
 #define T_TUPLE_H
 
 namespace tpl {
+  /* namespace details {
+    struct tupleItem
+    {
+      void* value;
+      char* type;
+    };
+  } */
+  
 
-  template</* implementation defined */>
+  template<typename T, typename ... Types>
   class Tuple {
+  private:
+    size_t size;
+    std::variant<Types ...> tab [];
+
   public:
     /**
      * Default constructor
      */
     Tuple() {
-
+      size = 0;
+      tab = NULL;
     }
 
     /**
      * Constructor to initialize values
      */
-    Tuple(/* implementation defined */) {
-
-    }
+    Tuple(Types&& ... values) {
+      size = sizeof...(values);
+      tab = calloc(size, sizeof(std::variant<Types ...>));
+      size_t i = 0;
+      for (auto&& x : {values ...}) {
+        tab[i] = x;
+        i++;
+        if (i == size){break;}
+      }
+    } 
 
     /**
      * Value getter
+     *
+     * --> iterate on itself while index >= 0
+     * return type is not definitive yet
      */
     template<int index>
-    const /* implementation defined */& get() const {
-
+    const auto& get() const {
+      
     }
 
     template<int index>
-    /* implementation defined */& get() {
+    auto& get() {
 
     }
 
