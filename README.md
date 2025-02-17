@@ -1,6 +1,6 @@
-## tuple
+# tuple
 Multi-Paradigm Programming uni project
 
-# Authors
+## Authors
 Rios Quesada Théobald
 Bertrand Samuel
