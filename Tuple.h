@@ -23,7 +23,7 @@ namespace tpl {
      */
     Tuple() {
         size = 0;
-        std::cerr << "Nbarg : 0\n";
+        // std::cerr << "Nbarg : 0\n"; // DEBUG
     }
 
     /**
@@ -31,15 +31,26 @@ namespace tpl {
      * /
     template <typename ... OtherTypes>
     Tuple<Types ...> operator+(const Tuple<OtherTypes...>& other) const {
-
+        if (other.size != 0){
+            std::cout << "C'est pas bon";
+        }
+        else {
+            std::cout << "C'est pas bon";
+        }
     }
 
     /**
      * Addition between to tuples - in place
-     * /
+     */
     template <typename ... OtherTypes>
     Tuple<Types ...>& operator+=(const Tuple<OtherTypes...>& other) {
-
+        if (other.size == 0){
+            std::cout << "C'est bon\n";
+        }
+        else {
+            std::cout << "C'est pas bon\n";
+        }
+        return *this;
     }
 
     /**
@@ -52,10 +63,16 @@ namespace tpl {
 
     /**
      * Substraction between to tuples - in place
-     * /
+     */
     template <typename ... OtherTypes>
     Tuple<Types ...>& operator-=(const Tuple<OtherTypes...>& other) {
-
+        if (other.size == 0){
+            std::cout << "C'est bon\n";
+        }
+        else {
+            std::cout << "C'est pas bon\n";
+        }
+        return *this;
     }
 
     /**
@@ -68,10 +85,16 @@ namespace tpl {
 
     /**
      * Multiplication between to tuples - in place
-     * /
+     */
     template <typename ... OtherTypes>
     Tuple<Types ...>& operator*=(const Tuple<OtherTypes...>& other) {
-
+        if (other.size == 0){
+            std::cout << "C'est bon\n";
+        }
+        else {
+            std::cout << "C'est pas bon\n";
+        }
+        return *this;
     }
 
     /**
@@ -84,10 +107,17 @@ namespace tpl {
 
     /**
      * Division between to tuples - in place
-     * /
+     */
     template <typename ... OtherTypes>
     Tuple<Types ...>& operator/=(const Tuple<OtherTypes...>& other) {
 
+        if (other.size == 0){
+            std::cout << "C'est bon\n";
+        }
+        else {
+            std::cout << "C'est pas bon\n";
+        }
+        return *this;
     }
 
     /**
@@ -105,7 +135,7 @@ namespace tpl {
 
     template <typename ... OtherTypes>
     bool operator<(const Tuple<OtherTypes...>& other) const {
-      return other.size == 0;
+      return false;
     }
 
     template <typename ... OtherTypes>
@@ -115,12 +145,12 @@ namespace tpl {
 
     template <typename ... OtherTypes>
     bool operator>(const Tuple<OtherTypes...>& other) const {
-      return other < this;
+      return other.size != 0;
     }
 
     template <typename ... OtherTypes>
     bool operator>=(const Tuple<OtherTypes...>& other) const {
-      return other.size == 0;
+      return true;
     }
 
     /**
@@ -145,7 +175,7 @@ namespace tpl {
      */
     Tuple(Type head, Types ...queue): item (head), next (Tuple<Types...> (queue...)){
       size = sizeof... (queue) + 1;
-      std::cerr << "Nbarg : " << size << "\n";
+      //std::cerr << "Nbarg : " << size << "\n"; // DEBUG
     }
 
     /**
@@ -153,27 +183,27 @@ namespace tpl {
      */
     template<int index>
     const auto& get() const {
-      if (index > 0){
+      if constexpr (index > 0){
         return next.template get<index-1> ();
       }
-      if (index == 0){
+      if constexpr (index == 0){
         return item;
       }
-      if (index < 0){
+      if constexpr (index < 0){
         return NULL;
       }
     }
     
     
     template<int index>
-    constexpr auto& get() {
-      if (index > 0){
+    auto& get() {
+      if constexpr (index > 0){
         return next.template get<index-1> ();
       }
-      if (index == 0){
+      if constexpr (index == 0){
         return item;
       }
-      if (index < 0){
+      if constexpr (index < 0){
         return NULL;
       }
     }
@@ -182,16 +212,22 @@ namespace tpl {
      * Addition between to tuples
      * /
     template <typename ... OtherTypes>
-    Tuple<Types ...> operator+(const Tuple<OtherTypes...>& other) const {
-
+    Tuple<Type, Types ...> operator+(const Tuple<OtherTypes...>& other) const {
+        Tuple<Type, Types ...> res;
+        res.item = item + other.item;
+        res.size = size;
+        res.next = next + other.next;
+        return res;
     }
 
     /**
      * Addition between to tuples - in place
-     * /
+     */
     template <typename ... OtherTypes>
-    Tuple<Types ...>& operator+=(const Tuple<OtherTypes...>& other) {
-
+    Tuple<Type, Types ...>& operator+=(const Tuple<OtherTypes...>& other) {
+        item += other.item;
+        next += other.next;
+        return *this;
     }
 
     /**
@@ -204,10 +240,12 @@ namespace tpl {
 
     /**
      * Substraction between to tuples - in place
-     * /
+     */
     template <typename ... OtherTypes>
-    Tuple<Types ...>& operator-=(const Tuple<OtherTypes...>& other) {
-
+    Tuple<Type, Types ...>& operator-=(const Tuple<OtherTypes...>& other) {
+        item -= other.item;
+        next -= other.next;
+        return *this;
     }
 
     /**
@@ -220,10 +258,12 @@ namespace tpl {
 
     /**
      * Multiplication between to tuples - in place
-     * /
+     */
     template <typename ... OtherTypes>
-    Tuple<Types ...>& operator*=(const Tuple<OtherTypes...>& other) {
-
+    Tuple<Type, Types ...>& operator*=(const Tuple<OtherTypes...>& other) {
+        item *= other.item;
+        next *= other.next;
+        return *this;
     }
 
     /**
@@ -236,10 +276,12 @@ namespace tpl {
 
     /**
      * Division between to tuples - in place
-     * /
+     */
     template <typename ... OtherTypes>
-    Tuple<Types ...>& operator/=(const Tuple<OtherTypes...>& other) {
-
+    Tuple<Type, Types ...>& operator/=(const Tuple<OtherTypes...>& other) {
+        item /= other.item;
+        next /= other.next;
+        return *this;
     }
 
     /**
@@ -257,22 +299,22 @@ namespace tpl {
 
     template <typename ... OtherTypes>
     bool operator<(const Tuple<OtherTypes...>& other) const {
-      return  !other.size == 0 && (item < other.item || (item == other.item && next < other.next));
+      return !other.size == 0 && (item < other.item || (item == other.item && next < other.next));
     }
 
     template <typename ... OtherTypes>
     bool operator<=(const Tuple<OtherTypes...>& other) const {
-      return !(other < this);
+      return !other.size == 0 && (item < other.item || (item == other.item && next <= other.next));
     }
 
     template <typename ... OtherTypes>
     bool operator>(const Tuple<OtherTypes...>& other) const {
-      return other < this;
+      return other.size == 0 || (item > other.item || (item == other.item && next > other.next));
     }
 
     template <typename ... OtherTypes>
     bool operator>=(const Tuple<OtherTypes...>& other) const {
-      return !(this < other);
+      return other.size == 0 || (item > other.item || (item == other.item && next >= other.next));
     }
 
     /**
