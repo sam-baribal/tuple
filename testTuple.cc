@@ -32,7 +32,7 @@ TEST(TupleTest, Comparaison) {
     EXPECT_FALSE (t1 <= t2);
 }
 
-TEST(TupleTest, Operation_int) {
+TEST(TupleTest, Operation_int_in_place) {
     tpl::Tuple<int> t1(42);
     tpl::Tuple<int> t2(-42);
     t1 += t2;
@@ -45,7 +45,7 @@ TEST(TupleTest, Operation_int) {
     EXPECT_TRUE (t1.get<0> () == 42);
 }
 
-TEST(TupleTest, Operation_double) {
+TEST(TupleTest, Operation_double_in_place) {
     tpl::Tuple<double> t1(42.0);
     tpl::Tuple<double> t2(-42.0);
     t1 += t2;
@@ -58,11 +58,29 @@ TEST(TupleTest, Operation_double) {
     EXPECT_NEAR (t1.get<0> (), 42.0, 0.00001);
 }
 
-TEST(TupleTest, Operation_multi_add) {
+TEST(TupleTest, Operation_multi_add_in_place) {
     tpl::Tuple<int, double, std::string> t1(42, 3.14, "The cake is ");
     tpl::Tuple<int, double, std::string> t2(-42, -3.14, "a lie");
     t1 += t2;
     EXPECT_TRUE (t1.get<0> () == 0 && t1.get<1> () == 0 && t1.get<2> () == "The cake is a lie");
+}
+
+TEST(TupleTest, Operation_int) {
+    tpl::Tuple<int> t1(42);
+    tpl::Tuple<int> t2(-42);
+    tpl::Tuple<int> t3 = t1 + t2;
+    EXPECT_TRUE (t3.get<0> () == 0);
+    t3 = t1 - t2;
+    EXPECT_TRUE (t3.get<0> () == 84);
+    t3 = t1 * t2;
+    EXPECT_TRUE (t3.get<0> () == -1764);
+    t3 = t1 / t2;
+    EXPECT_TRUE (t3.get<0> () == -1);
+    
+    EXPECT_TRUE ((t1 + t2).get<0> () == 0);
+    EXPECT_TRUE ((t1 - t2).get<0> () == 84);
+    EXPECT_TRUE ((t1 * t2).get<0> () == -1764);
+    EXPECT_TRUE ((t1 / t2).get<0> () == -1);
 }
 
 int main(int argc, char* argv[]) {

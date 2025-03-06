@@ -28,7 +28,7 @@ namespace tpl {
 
     /**
      * Addition between to tuples
-     * /
+     */
     template <typename ... OtherTypes>
     Tuple<Types ...> operator+(const Tuple<OtherTypes...>& other) const {
         if (other.size != 0){
@@ -55,7 +55,7 @@ namespace tpl {
 
     /**
      * Substraction between to tuples
-     * /
+     */
     template <typename ... OtherTypes>
     Tuple<Types ...> operator-(const Tuple<OtherTypes...>& other) const {
 
@@ -77,7 +77,7 @@ namespace tpl {
 
     /**
      * Multiplication between to tuples
-     * /
+     */
     template <typename ... OtherTypes>
     Tuple<Types ...> operator*(const Tuple<OtherTypes...>& other) const {
 
@@ -99,7 +99,7 @@ namespace tpl {
 
     /**
      * Division between to tuples
-     * /
+     */
     template <typename ... OtherTypes>
     Tuple<Types ...> operator/(const Tuple<OtherTypes...>& other) const {
 
@@ -135,6 +135,7 @@ namespace tpl {
 
     template <typename ... OtherTypes>
     bool operator<(const Tuple<OtherTypes...>& other) const {
+      (void) other;
       return false;
     }
 
@@ -150,6 +151,7 @@ namespace tpl {
 
     template <typename ... OtherTypes>
     bool operator>=(const Tuple<OtherTypes...>& other) const {
+      (void) other;
       return true;
     }
 
@@ -210,13 +212,11 @@ namespace tpl {
 
     /**
      * Addition between to tuples
-     * /
+     */
     template <typename ... OtherTypes>
     Tuple<Type, Types ...> operator+(const Tuple<OtherTypes...>& other) const {
-        Tuple<Type, Types ...> res;
-        res.item = item + other.item;
-        res.size = size;
-        res.next = next + other.next;
+        Tuple<Type, Types ...> res = *this;
+        res += other;
         return res;
     }
 
@@ -232,10 +232,12 @@ namespace tpl {
 
     /**
      * Substraction between to tuples
-     * /
+     */
     template <typename ... OtherTypes>
-    Tuple<Types ...> operator-(const Tuple<OtherTypes...>& other) const {
-
+    Tuple<Type, Types ...> operator-(const Tuple<OtherTypes...>& other) const {
+        Tuple<Type, Types ...> res = *this;
+        res -= other;
+        return res;
     }
 
     /**
@@ -250,10 +252,12 @@ namespace tpl {
 
     /**
      * Multiplication between to tuples
-     * /
+     */
     template <typename ... OtherTypes>
-    Tuple<Types ...> operator*(const Tuple<OtherTypes...>& other) const {
-
+    Tuple<Type, Types ...> operator*(const Tuple<OtherTypes...>& other) const {
+        Tuple<Type, Types ...> res = *this;
+        res *= other;
+        return res;
     }
 
     /**
@@ -268,10 +272,12 @@ namespace tpl {
 
     /**
      * Division between to tuples
-     * /
+     */
     template <typename ... OtherTypes>
-    Tuple<Types ...> operator/(const Tuple<OtherTypes...>& other) const {
-
+    Tuple<Type, Types ...> operator/(const Tuple<OtherTypes...>& other) const {
+        Tuple<Type, Types ...> res = *this;
+        res /= other;
+        return res;
     }
 
     /**
