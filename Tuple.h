@@ -13,6 +13,7 @@ namespace tpl {
   private:
     size_t size;
   public:
+    template <typename ...U> friend class Tuple;
     /**
      * Default constructor
      */
@@ -148,6 +149,7 @@ namespace tpl {
     Tuple<Types...> next;
     
   public:
+    template <typename ...U> friend class Tuple;
     /**
      * Constructor to initialize values
      */
@@ -280,12 +282,12 @@ namespace tpl {
 
     template <typename ... OtherTypes>
     bool operator<(const Tuple<OtherTypes...>& other) const {
-      return !other.size == 0 && (item < other.item || (item == other.item && next < other.next));
+      return (!(other.size == 0)) && (item < other.item || (item == other.item && next < other.next));
     }
 
     template <typename ... OtherTypes>
     bool operator<=(const Tuple<OtherTypes...>& other) const {
-      return !other.size == 0 && (item < other.item || (item == other.item && next <= other.next));
+      return (!(other.size == 0)) && (item < other.item || (item == other.item && next <= other.next));
     }
 
     template <typename ... OtherTypes>
@@ -302,12 +304,10 @@ namespace tpl {
      * Concatenate two tuples
      */
     template <typename ... OtherTypes>
-    Tuple<Type, Types ..., OtherTypes ...> operator|(Tuple<OtherTypes...>&& other) {
-      auto res = *this;
-      if (other.size == 0){
-        return res;
-      }
-      res.next | other;
+    Tuple<Type, Types..., OtherTypes...> operator|(Tuple<OtherTypes...>&& other) {
+      Tuple<Type, Types..., OtherTypes...> res = *this;
+      size += sizeof...(OtherTypes);
+      next = std::move (next) | std::move (other);
       return res;
     }
   };
@@ -317,14 +317,8 @@ namespace tpl {
    */
   template <class... Types>
   constexpr Tuple<Types...> makeTuple(Types&&... args) {
-    return Tuple<> ();
+    return Tuple<Types...> (args ...);
   }
-  
-  /* // Buggy surcharge of makeTuple for non-empty Tuples
-  template <class Type, class... Types>
-  constexpr Tuple<Type, Types...> makeTuple(Type arg, Types&&... args) {
-    return *Tuple<decltype(arg), decltype (args...)> (arg, args...);
-  }*/
   
 }
 #endif // T_TUPLE_H
