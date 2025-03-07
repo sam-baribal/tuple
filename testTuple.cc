@@ -120,7 +120,7 @@ TEST(TupleTest, Concatenate_first_empty) {
     auto t1 = tpl::makeTuple();
     auto t2 = tpl::makeTuple(1, 1);
     auto t3 = std::move(t1) | std::move(t2);
-    EXPECT_TRUE (t3 == tpl::makeTuple(1));
+    EXPECT_TRUE (t3 == tpl::makeTuple(1, 1));
 }
 
 TEST(TupleTest, Concatenate_second_empty) {
@@ -129,12 +129,26 @@ TEST(TupleTest, Concatenate_second_empty) {
     auto t3 = std::move(t1) | std::move(t2);
     EXPECT_TRUE (t3 == tpl::makeTuple(1, 1));
 }
-/** /
+
+TEST(TupleTest, Concatenate_first_empty_multi) {
+    auto t1 = tpl::makeTuple();
+    auto t2 = tpl::makeTuple(1, 1.0, "Hello");
+    auto t3 = std::move(t1) | std::move(t2);
+    EXPECT_TRUE (t3 == tpl::makeTuple(1, 1.0, "Hello"));
+}
+
+TEST(TupleTest, Concatenate_second_empty_multi) {
+    auto t1 = tpl::makeTuple("hello", 0, 1, 2, "aa");
+    auto t2 = tpl::makeTuple();
+    auto t3 = std::move(t1) | std::move(t2);
+    EXPECT_TRUE (t3 == tpl::makeTuple("hello", 0, 1, 2, "aa"));
+}
+
 TEST(TupleTest, Concatenate_int) {
     tpl::Tuple<int,  int,  int> t1 = tpl::makeTuple(0, 1, 2);
     tpl::Tuple<int,  int,  int> t2 = tpl::makeTuple(3, 4, 5);
-    //tpl::Tuple<int,  int,  int, int,  int,  int> t3 = std::move(t1) | std::move(t2);
-    auto t3 = std::move(t1) | std::move(t2);
+    tpl::Tuple<int,  int,  int, int,  int,  int> t3 = std::move(t1) | std::move(t2);
+    //auto t3 = std::move(t1) | std::move(t2);
     EXPECT_EQ (t3.get<0> (), 0);
     EXPECT_EQ (t3.get<1> (), 1);
     EXPECT_EQ (t3.get<2> (), 2);
@@ -142,7 +156,7 @@ TEST(TupleTest, Concatenate_int) {
     EXPECT_EQ (t3.get<4> (), 4);
     EXPECT_EQ (t3.get<5> (), 5);
 }
-/*
+
 TEST(TupleTest, Concatenate_multi) {
     auto t1 = tpl::makeTuple("R");
     auto t2 = tpl::makeTuple("A", 9);
@@ -151,7 +165,7 @@ TEST(TupleTest, Concatenate_multi) {
     EXPECT_EQ (t3.get<1> (), "A");
     EXPECT_EQ (t3.get<2> (), 9);
 }
-*/
+
 int main(int argc, char* argv[]) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

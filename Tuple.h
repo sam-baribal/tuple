@@ -6,6 +6,7 @@
 #include <sys/types.h>
 #include <stdio.h>
 
+
 namespace tpl {
   
   template<typename ...Types>
@@ -147,6 +148,11 @@ namespace tpl {
     size_t size;
     Type item;
     Tuple<Types...> next;
+    
+    
+    Tuple(Type head, Tuple<Types ...> queue): item (head), next (queue){
+      size = queue.size + 1;
+    }
     
   public:
     template <typename ...U> friend class Tuple;
@@ -305,9 +311,12 @@ namespace tpl {
      */
     template <typename ... OtherTypes>
     Tuple<Type, Types..., OtherTypes...> operator|(Tuple<OtherTypes...>&& other) {
-      Tuple<Type, Types..., OtherTypes...> res = *this;
-      size += sizeof...(OtherTypes);
-      next = std::move (next) | std::move (other);
+      Tuple<Types..., OtherTypes...> next_tuple = (std::move (next) | std::move (other));
+      Tuple<Type, Types..., OtherTypes...> res (item, next_tuple);
+      //res.next = next_res; // <- res.next adress cannot change of type while not changing of value
+      
+      //return makeTuple (*this, other); // <- return a Tuple<Tuple<Type, Types...>, Tuple<Othertypes...>>
+      
       return res;
     }
   };
