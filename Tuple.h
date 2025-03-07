@@ -2,161 +2,188 @@
 #define T_TUPLE_H
 
 namespace tpl {
-  template<typename ... Types>
-  class Tuple {
-  private:
-    size_t size;
-    std::vector<std::variant<Types...>> tab;
+  template <typename... Types>
+  class Tuple;
 
-    template <typename FirstT, typename ... RestTypes>
-    void recursiveConstruction(FirstT firstVal, RestTypes... restVals) {
-      tab.push_back(firstVal);
-      recursiveConstruction<RestTypes...>(restVals...);
-    }
+  template<typename T, typename... Types>
+  class Tuple<T, Types...> {
+    private:
 
-    template <typename LastT>
-    void recursiveConstruction(LastT lastVal) {
-      tab.push_back(lastVal);
-    }
+    public:
+      int size;
+      T value;
+      Tuple<Types...> next;
 
-  public:
-    /**
-     * Default constructor
-     */
-    Tuple() {
-      size = 0;
-      tab = {};
-    }
+      /**
+       * Default constructor
+       */
+      Tuple(){
+        int size = 0;
+        value = NULL;
+        next = NULL;
+      }
 
-    /**
-     * Constructor to initialize values
-     */
-    Tuple(Types... values) {
-      size = sizeof...(values);
-      tab = {};
-      recursiveConstruction<Types...>(values...);
-    } 
+      Tuple(T&& firstValue, Types&&... restVals)
+        : value(std::forward<T>(firstValue)), next(std::forward<Types>(restVals)...) {}
+      /*{
+        value = std::forward<T>(firstValue);
+        if (sizeof...(restVals) == 0){
+          next = NULL;
+          size = 1;
+        }
+        else {
+          next = std::forward<Types>(restVals)...;
+          size = 1 + next.size;
+        }
+      }*/
 
-    /**
-     * Value getter
-     */
-    template<int index>
-    const auto& get() const {
-      std::cout << "get const\n";
-      return std::get<index>(tab.at(index));
-    }
+      /**
+      * Value getter
+      */
+      template<int index>
+      const auto& get() const {
+        if constexpr (index == 0){
+          return value;
+        }
+        return next.template get<index-1>();;
+      }
 
-    template<int index>
-    auto& get() {
-      std::cout << "get pas const\n";
-      return std::get<index>(tab.at(index));
-    }
-    
-    /**
-     * Addition between to tuples
-     */
-    template <typename ... OtherTypes>
-    Tuple<Types ...> operator+(const Tuple<OtherTypes...>& other) const {
-      return NULL;
-    }
+      template<int index>
+      auto& get() {
+        if constexpr (index == 0){
+          return value;
+        }
+        return next.template get<index-1>();
+      }
+      
+      /**
+      * Addition between to tuples
+      */
+      template <typename ... OtherTypes>
+      Tuple<Types ...> operator+(const Tuple<OtherTypes...>& other) const {
+        return Tuple<Types ...>();
+      }
 
-    /**
-     * Addition between to tuples - in place
-     */
-    template <typename ... OtherTypes>
-    Tuple<Types ...>& operator+=(const Tuple<OtherTypes...>& other) {
-      return NULL;
-    }
+      /**
+      * Addition between to tuples - in place
+      */
+      template <typename ... OtherTypes>
+      Tuple<Types ...>& operator+=(const Tuple<OtherTypes...>& other) {
+        return Tuple<Types ...>();
+      }
 
-    /**
-     * Substraction between to tuples
-     */
-    template <typename ... OtherTypes>
-    Tuple<Types ...> operator-(const Tuple<OtherTypes...>& other) const {
-      return NULL;
-    }
+      /**
+      * Substraction between to tuples
+      */
+      template <typename ... OtherTypes>
+      Tuple<Types ...> operator-(const Tuple<OtherTypes...>& other) const {
+        return Tuple<Types ...>();
+      }
 
-    /**
-     * Substraction between to tuples - in place
-     */
-    template <typename ... OtherTypes>
-    Tuple<Types ...>& operator-=(const Tuple<OtherTypes...>& other) {
-      return NULL;
-    }
+      /**
+      * Substraction between to tuples - in place
+      */
+      template <typename ... OtherTypes>
+      Tuple<Types ...>& operator-=(const Tuple<OtherTypes...>& other) {
+        return Tuple<Types ...>();
+      }
 
-    /**
-     * Multiplication between to tuples
-     */
-    template <typename ... OtherTypes>
-    Tuple<Types ...> operator*(const Tuple<OtherTypes...>& other) const {
-      return NULL;
-    }
+      /**
+      * Multiplication between to tuples
+      */
+      template <typename ... OtherTypes>
+      Tuple<Types ...> operator*(const Tuple<OtherTypes...>& other) const {
+        return Tuple<Types ...>();
+      }
 
-    /**
-     * Multiplication between to tuples - in place
-     */
-    template <typename ... OtherTypes>
-    Tuple<Types ...>& operator*=(const Tuple<OtherTypes...>& other) {
-      return NULL;
-    }
+      /**
+      * Multiplication between to tuples - in place
+      */
+      template <typename ... OtherTypes>
+      Tuple<Types ...>& operator*=(const Tuple<OtherTypes...>& other) {
+        return Tuple<Types ...>();
+      }
 
-    /**
-     * Division between to tuples
-     */
-    template <typename ... OtherTypes>
-    Tuple<Types ...> operator/(const Tuple<OtherTypes...>& other) const {
-      return NULL;
-    }
+      /**
+      * Division between to tuples
+      */
+      template <typename ... OtherTypes>
+      Tuple<Types ...> operator/(const Tuple<OtherTypes...>& other) const {
+        return Tuple<Types ...>();
+      }
 
-    /**
-     * Division between to tuples - in place
-     */
-    template <typename ... OtherTypes>
-    Tuple<Types ...>& operator/=(const Tuple<OtherTypes...>& other) {
-      return NULL;
-    }
+      /**
+      * Division between to tuples - in place
+      */
+      template <typename ... OtherTypes>
+      Tuple<Types ...>& operator/=(const Tuple<OtherTypes...>& other) {
+        return Tuple<Types ...>();
+      }
 
-    /**
-     * Comparaison operators
-     */
-    template <typename ... OtherTypes>
-    bool operator==(const Tuple<OtherTypes...>& other) const {
-      return false;
-    }
+      /**
+      * Comparaison operators
+      */
+      template <typename ... OtherTypes>
+      bool operator==(const Tuple<OtherTypes...>& other) const {
+        if (size + other.size == 0){
+          return true;
+        }
+        return false;
+      }
 
-    template <typename ... OtherTypes>
-    bool operator!=(const Tuple<OtherTypes...>& other) const {
-      return false;
-    }
 
-    template <typename ... OtherTypes>
-    bool operator<(const Tuple<OtherTypes...>& other) const {
-      return false;
-    }
 
-    template <typename ... OtherTypes>
-    bool operator<=(const Tuple<OtherTypes...>& other) const {
-      return false;
-    }
+      template <typename ... OtherTypes>
+      bool operator!=(const Tuple<OtherTypes...>& other) const {
+        if (size + other.size == 0){
+          return true;
+        }
+        return false;
+      }
 
-    template <typename ... OtherTypes>
-    bool operator>(const Tuple<OtherTypes...>& other) const {
-      return false;
-    }
+      template <typename ... OtherTypes>
+      bool operator<(const Tuple<OtherTypes...>& other) const {
+        if (size + other.size == 0){
+          return true;
+        }
+        return false;
+      }
 
-    template <typename ... OtherTypes>
-    bool operator>=(const Tuple<OtherTypes...>& other) const {
-      return false;
-    }
+      template <typename ... OtherTypes>
+      bool operator<=(const Tuple<OtherTypes...>& other) const {
+        if (size + other.size == 0){
+          return true;
+        }
+        return false;
+      }
 
-    /**
-     * Concatenate two tuples
-     */
-    template <typename ... OtherTypes>
-    Tuple<Types ...> operator|(Tuple<OtherTypes...>&& other) {
+      template <typename ... OtherTypes>
+      bool operator>(const Tuple<OtherTypes...>& other) const {
+        if (size + other.size == 0){
+          return true;
+        }
+        return false;
+      }
 
-    }
+      template <typename ... OtherTypes>
+      bool operator>=(const Tuple<OtherTypes...>& other) const {
+        if (size + other.size == 0){
+          return true;
+        }
+        return false;
+      }
+
+      /**
+      * Concatenate two tuples
+      */
+      template <typename ... OtherTypes>
+      Tuple<Types ...> operator|(Tuple<OtherTypes...>&& other) {
+
+      }
   };
+
+  template <>
+  class Tuple<> {};
 
   /**
    * Helper function to create a tuple
