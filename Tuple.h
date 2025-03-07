@@ -7,11 +7,6 @@
 #include <stdio.h>
 
 namespace tpl {
-  /*
-  struct tuple_item {
-    std::type_info type;
-    void *item;
-  };*/
   
   template<typename ...Types>
   class Tuple  {
@@ -23,7 +18,6 @@ namespace tpl {
      */
     Tuple() {
         size = 0;
-        // std::cerr << "Nbarg : 0\n"; // DEBUG
     }
 
     /**
@@ -31,12 +25,9 @@ namespace tpl {
      */
     template <typename ... OtherTypes>
     Tuple<Types ...> operator+(const Tuple<OtherTypes...>& other) const {
-        if (other.size != 0){
-            std::cout << "C'est pas bon";
-        }
-        else {
-            std::cout << "C'est pas bon";
-        }
+        Tuple<Types ...> res = *this;
+        res += other;
+        return res;
     }
 
     /**
@@ -44,12 +35,7 @@ namespace tpl {
      */
     template <typename ... OtherTypes>
     Tuple<Types ...>& operator+=(const Tuple<OtherTypes...>& other) {
-        if (other.size == 0){
-            std::cout << "C'est bon\n";
-        }
-        else {
-            std::cout << "C'est pas bon\n";
-        }
+        (void) (other.size == 0);
         return *this;
     }
 
@@ -58,7 +44,9 @@ namespace tpl {
      */
     template <typename ... OtherTypes>
     Tuple<Types ...> operator-(const Tuple<OtherTypes...>& other) const {
-
+        Tuple<Types ...> res = *this;
+        res -= other;
+        return res;
     }
 
     /**
@@ -66,12 +54,7 @@ namespace tpl {
      */
     template <typename ... OtherTypes>
     Tuple<Types ...>& operator-=(const Tuple<OtherTypes...>& other) {
-        if (other.size == 0){
-            std::cout << "C'est bon\n";
-        }
-        else {
-            std::cout << "C'est pas bon\n";
-        }
+        (void) (other.size == 0);
         return *this;
     }
 
@@ -80,7 +63,9 @@ namespace tpl {
      */
     template <typename ... OtherTypes>
     Tuple<Types ...> operator*(const Tuple<OtherTypes...>& other) const {
-
+        Tuple<Types ...> res = *this;
+        res *= other;
+        return res;
     }
 
     /**
@@ -88,12 +73,7 @@ namespace tpl {
      */
     template <typename ... OtherTypes>
     Tuple<Types ...>& operator*=(const Tuple<OtherTypes...>& other) {
-        if (other.size == 0){
-            std::cout << "C'est bon\n";
-        }
-        else {
-            std::cout << "C'est pas bon\n";
-        }
+        (void) (other.size == 0);
         return *this;
     }
 
@@ -102,7 +82,9 @@ namespace tpl {
      */
     template <typename ... OtherTypes>
     Tuple<Types ...> operator/(const Tuple<OtherTypes...>& other) const {
-
+        Tuple<Types ...> res = *this;
+        res /= other;
+        return res;
     }
 
     /**
@@ -110,13 +92,7 @@ namespace tpl {
      */
     template <typename ... OtherTypes>
     Tuple<Types ...>& operator/=(const Tuple<OtherTypes...>& other) {
-
-        if (other.size == 0){
-            std::cout << "C'est bon\n";
-        }
-        else {
-            std::cout << "C'est pas bon\n";
-        }
+        (void) (other.size == 0);
         return *this;
     }
 
@@ -159,8 +135,8 @@ namespace tpl {
      * Concatenate two tuples
      */
     template <typename ... OtherTypes>
-    Tuple<Types ...> operator|(Tuple<OtherTypes...>&& other) {
-
+    Tuple<OtherTypes ...> operator|(Tuple<OtherTypes...>&& other) {
+        return other;
     }
   };
   
@@ -177,7 +153,6 @@ namespace tpl {
      */
     Tuple(Type head, Types ...queue): item (head), next (Tuple<Types...> (queue...)){
       size = sizeof... (queue) + 1;
-      //std::cerr << "Nbarg : " << size << "\n"; // DEBUG
     }
 
     /**
@@ -327,8 +302,13 @@ namespace tpl {
      * Concatenate two tuples
      */
     template <typename ... OtherTypes>
-    Tuple<Types ...> operator|(Tuple<OtherTypes...>&& other) {
-
+    Tuple<Type, Types ..., OtherTypes ...> operator|(Tuple<OtherTypes...>&& other) {
+      auto res = *this;
+      if (other.size == 0){
+        return res;
+      }
+      res.next | other;
+      return res;
     }
   };
 
@@ -337,8 +317,14 @@ namespace tpl {
    */
   template <class... Types>
   constexpr Tuple<Types...> makeTuple(Types&&... args) {
-
+    return Tuple<> ();
   }
+  
+  /* // Buggy surcharge of makeTuple for non-empty Tuples
+  template <class Type, class... Types>
+  constexpr Tuple<Type, Types...> makeTuple(Type arg, Types&&... args) {
+    return *Tuple<decltype(arg), decltype (args...)> (arg, args...);
+  }*/
   
 }
 #endif // T_TUPLE_H

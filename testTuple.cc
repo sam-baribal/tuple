@@ -83,6 +83,18 @@ TEST(TupleTest, Operation_int) {
     EXPECT_TRUE ((t1 / t2).get<0> () == -1);
 }
 
+TEST(TupleTest, Make_tuple) {
+    auto t1 = tpl::makeTuple();
+    EXPECT_TRUE (t1 + t1 == t1);
+    //auto t2 = tpl::makeTuple(10, 10.0f);
+}
+
+TEST(TupleTest, Concatenate_empty) {
+    auto t1 = tpl::makeTuple();
+    auto t2 = tpl::makeTuple();
+    EXPECT_TRUE ((std::move(t1) | std::move(t2)) == tpl::makeTuple());
+}
+
 int main(int argc, char* argv[]) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
