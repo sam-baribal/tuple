@@ -1,10 +1,7 @@
 #ifndef T_TUPLE_H
 #define T_TUPLE_H
 
-#include <typeinfo>
-#include <variant>
 #include <sys/types.h>
-#include <stdio.h>
 
 
 namespace tpl {
