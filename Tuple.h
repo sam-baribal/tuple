@@ -9,8 +9,8 @@
 
 namespace tpl {
   
-  template<typename ...Types>
-  class Tuple  {
+template<typename ...Types>
+class Tuple  {
   private:
     size_t size;
   public:
@@ -142,8 +142,8 @@ namespace tpl {
     }
   };
   
-  template<typename Type, typename ...Types>
-  class Tuple<Type, Types ...> {
+template<typename Type, typename ...Types>
+class Tuple<Type, Types ...> {
   private:
     size_t size;
     Type item;
@@ -313,10 +313,6 @@ namespace tpl {
     Tuple<Type, Types..., OtherTypes...> operator|(Tuple<OtherTypes...>&& other) {
       Tuple<Types..., OtherTypes...> next_tuple = (std::move (next) | std::move (other));
       Tuple<Type, Types..., OtherTypes...> res (item, next_tuple);
-      //res.next = next_res; // <- res.next adress cannot change of type while not changing of value
-      
-      //return makeTuple (*this, other); // <- return a Tuple<Tuple<Type, Types...>, Tuple<Othertypes...>>
-      
       return res;
     }
   };
